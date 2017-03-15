@@ -6,7 +6,7 @@ values = []
 def read_measurements():
     print Measurement.__doc__
 
-    with open(r'd:\WTPLCTAGS.csv', 'r') as f:
+    with open(r'WTPLCTAGS.csv', 'r') as f:
         for line in f:
             rows = line.split(";")
             if rows[1] == "READDATETIME":
