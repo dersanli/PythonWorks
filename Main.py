@@ -15,7 +15,7 @@ def read_measurements():
             m = Measurement()
             m.windspeed = rows[2]
             m.winddirection = rows[3]
-            
+
             values.append(m)
 
 

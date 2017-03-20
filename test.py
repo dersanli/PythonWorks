@@ -12,15 +12,16 @@ import time
 newvalue = 0
 windspeed = 7.0
 
+
 while True:
     payload = 'windspeed,region=tr-center value=' + repr(windspeed)
     try:
         r = requests.post('http://dev.soyut.com:8086/write?db=mydb2', data=payload)
     except requests.exceptions.RequestException as e:
         print "Connection Error. Retrying - ", e
-    print r.status_code, 
-#    print r.url
-#    print r.text
+    print r.status_code,
+    #    print r.url
+    #    print r.text
     time.sleep(1)
     newvalue = windspeed + random.uniform(-0.20, 0.20)
     print newvalue,
