@@ -1,3 +1,4 @@
+import sys
 from Measurement import Measurement
 
 values = []
@@ -24,6 +25,5 @@ def print_measurements():
 
 
 if __name__ == "__main__":
-    import sys
     read_measurements()
     print_measurements()
