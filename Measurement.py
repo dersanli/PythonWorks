@@ -32,3 +32,16 @@ class Measurement:
         self.pacalternatorcurrentL2 = 0.0
         self.pacalternatorcurrentL3 = 0.0
         self.pacalternatorfrequency = 0.0
+
+    def create_query_string(self):
+        querystring = 'windmeasurement,brakeopen=@BO@,emergencybutton=@EB@ windspeed=@WS@,winddirection=@WD@,' \
+                      'turbinedirection=@TD@,highspeedrpm=@HSR@ @DT@'
+
+        querystring = querystring.replace('@BO@', self.brakeopen)
+        querystring = querystring.replace('@EB@', self.emergencybutton)
+        querystring = querystring.replace('@WS@', self.windspeed)
+        querystring = querystring.replace('@WD@', self.winddirection)
+        querystring = querystring.replace('@TD@', self.turbinedirection)
+        querystring = querystring.replace('@HSR@', self.highspeedrpm)
+        querystring = querystring.replace('@DT@', self.readdatetime)
+        return querystring

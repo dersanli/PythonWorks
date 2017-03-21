@@ -1,8 +1,10 @@
 from Measurement import Measurement
 import requests
 import datetime
+import time
 
 values = []
+
 
 # WTPLCTAGID                   int            0
 # READDATETIME                 datetime       1
@@ -37,10 +39,6 @@ values = []
 # PACALTERNATORFREQUENCY       int           30
 
 
-querystring = 'windmeasurement, brakeopen=@BO@, emergencybutton=@EB@ windspeed=@WS@, winddirection=@WD@, ' \
-              'turbinedirection=@TD@, highspeedrpm=@HSR@ @@DT@@'
-
-
 def read_measurements():
     print Measurement.__doc__
 
@@ -51,27 +49,33 @@ def read_measurements():
                 continue
             m = Measurement()
             m.readdatetime = datetime.datetime.strptime(rows[1], "%Y-%m-%d %H:%M:%S.%f").isoformat() + 'Z'
-            m.windspeed = rows[2]
-            m.winddirection = rows[3]
-            m.turbinedirection = rows[4]
-            m.lowspeedrpm = rows[5]
-            m.highspeedrpm = rows[6]
-            m.brakeopen = rows[7]
-            m.emergencybutton = rows[8]
+            m.windspeed = rows[2].replace(',', '.')
+            m.winddirection = rows[3].replace(',', '.')
+            m.turbinedirection = rows[4].replace(',', '.')
+            m.lowspeedrpm = rows[5].replace(',', '.')
+            m.highspeedrpm = rows[6].replace(',', '.')
+            m.brakeopen = rows[7].replace(',', '.')
+            m.emergencybutton = rows[8].replace(',', '.')
 
             values.append(m)
 
 
 def print_measurements():
     for k in values:
-        print k.readdatetime, k.windspeed, k.winddirection, k.turbinedirection, k.lowspeedrpm, k.highspeedrpm
+        print k.create_query_string()
+        write_measurement(k)
+
+
+def write_measurement(m):
+    payload = m.create_query_string()
+    try:
+        r = requests.post('http://dev.soyut.com:8086/write?db=mydb2&precision=s', data=payload)
+        print r.status_code, r.text
+    except requests.exceptions.RequestException as e:
+        print "Connection Error. Retrying - ", e
+    time.sleep(2)
 
 
 if __name__ == "__main__":
     read_measurements()
     print_measurements()
-    payload = 'windspeed,region=tr-center value=' + repr(windspeed)
-    try:
-        r = requests.post('http://dev.soyut.com:8086/write?db=mydb2', data=payload)
-    except requests.exceptions.RequestException as e:
-        print "Connection Error. Retrying - ", e
