@@ -1,10 +1,8 @@
-from Measurement import Measurement
-import requests
-import datetime
 import time
+import requests
+from Measurement import Measurement
 
 values = []
-
 
 # WTPLCTAGID                   int            0
 # READDATETIME                 datetime       1
@@ -48,7 +46,7 @@ def read_measurements():
             if rows[1] == "READDATETIME":
                 continue
             m = Measurement()
-            m.readdatetime = datetime.datetime.strptime(rows[1], "%Y-%m-%d %H:%M:%S.%f").isoformat() + 'Z'
+            m.readdatetime = convert_datetimestring_to_unixtimestamp(rows[1])
             m.windspeed = rows[2].replace(',', '.')
             m.winddirection = rows[3].replace(',', '.')
             m.turbinedirection = rows[4].replace(',', '.')
@@ -74,6 +72,10 @@ def write_measurement(m):
     except requests.exceptions.RequestException as e:
         print "Connection Error. Retrying - ", e
     time.sleep(2)
+
+
+def convert_datetimestring_to_unixtimestamp(datetimestring):
+    return str(int(time.mktime(time.strptime(datetimestring, '%Y-%m-%d %H:%M:%S.%f'))))
 
 
 if __name__ == "__main__":
